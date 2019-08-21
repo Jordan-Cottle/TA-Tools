@@ -1,15 +1,19 @@
 import os
 import re
 import subprocess
+import info
 
 pattern = re.compile(r'(\w+)_(?:\w*?_)?\d+_\d+_([\w\d-]+.java)')
 canvasRenamePattern = re.compile(r'(\w+)-\d.java')
-inFile = r'C:\Users\Jordan\Desktop\ITSC 1212 Grading\input.txt'
-inStacked = r'C:\Users\Jordan\Desktop\ITSC 1212 Grading\inputStacked.txt'
 
-os.chdir('C:/Users/Jordan/Desktop/ITSC 1212 Grading/Take Home Test 3/submissions')
+inputFiles = info.inputFiles
 
-directory = os.getcwd()
+inFile = inputFiles[0]
+inStacked = inputFiles[1]
+
+
+directory = info.submissionDirectory
+os.chdir(directory)
 files = os.listdir(directory)
 
 for fileName in files:
@@ -21,25 +25,37 @@ for fileName in files:
         programRenamed = re.match(canvasRenamePattern, programName)
         if(programRenamed):
             programName = programRenamed.group(1) + '.java'
-        
+
         if(not(os.path.exists(studentName))):
             os.mkdir(studentName)
 
-        os.rename(f'{directory}\{fileName}', f'{directory}/{studentName}/{programName}')
+        os.rename(f'{directory}\{fileName}',
+                  f'{directory}/{studentName}/{programName}')
+
         os.chdir(f'{studentName}')
-        subprocess.run('javac '+ programName)
+
+        subprocess.run('javac ' + programName)
 
         os.startfile(f'{directory}\{studentName}\{programName}')
-        
+
         response = 'y'
         while(response not in ['n', 'N', 'no', 'No']):
             print(programName)
+
             if(response in ['s', 'stack', 'S', 'Stack']):
-                subprocess.run(['java', programName[0: -5]], stdin = open(inStacked, 'r'))
+                subprocess.run(['java',
+                               programName[0: -5]],
+                               stdin=open(inStacked, 'r'))
+
             elif response in ['y', 'Y', 'yes', 'Yes']:
-                subprocess.run(['java', programName[0: -5]])
+                subprocess.run(['java',
+                               programName[0: -5]])
+
             else:
-                subprocess.run(['java', programName[0: -5]], stdin = open(inFile, 'r'))
+                subprocess.run(['java',
+                               programName[0: -5]],
+                               stdin=open(inFile, 'r'))
+
             response = input("Would you like to run the program again: ")
 
         os.chdir(f'..')

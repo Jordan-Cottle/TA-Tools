@@ -3,3 +3,7 @@
 
 # ignore vscode configuration
 /.vscode
+
+# ignore secret/environment specific information
+info.py
+# info.py must be created and filled with proper info for some fo the scripts in this project to work properly
