@@ -7,3 +7,9 @@
 # ignore secret/environment specific information
 info.py
 # info.py must be created and filled with proper info for some fo the scripts in this project to work properly
+
+# ignore python bytecode files
+*.pyc
+
+# ignore excel files created using the scripts
+*.xlsx
