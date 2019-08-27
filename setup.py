@@ -3,6 +3,17 @@ import shutil
 import re
 import info
 
+''' info.py requirements
+
+    info.workingDirectory
+        - A string representating a path to a directory to place script output.
+        - Student folders will be created inside of this directory, with their programs located inside
+
+    info.submissionDirectory
+        - A string representing a path to the directory where the student submissions are located
+        - Simply unzip the bulk downlaod from canvas and use the extracted folder's path for this variable
+'''
+
 pattern = re.compile(r'(\w+)_(?:\w*?_)?\d+_\d+_([\w\d-]+.java)')
 canvasRenamePattern = re.compile(r'(\w+)-\d.java')
 

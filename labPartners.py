@@ -2,6 +2,16 @@ import info
 from random import choice
 from openpyxl import Workbook
 
+''' info.py requirements
+    info.studentList
+    - A dictionary containing all student's names
+    - The structure of the dictionary is important
+        * There are only two top level keys, "Male" and "Female"
+        * The values associated with each key is simply a list containing each student's name
+    - place all Male students in the list located under the "Male" key
+    - place all Female students in the list located under the "Female" key
+'''
+
 
 def makeTeams(students):
     teams = []

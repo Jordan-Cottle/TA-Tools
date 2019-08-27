@@ -3,6 +3,14 @@ import re
 import subprocess
 import info
 
+''' info.py requirements
+
+    info.workingDirectory
+        - A path to a directory where student folders are located.
+        - The script will find all subdirectories directly inside of this path
+        - All java files contained within each subdirectory will be executed
+'''
+
 inputFiles = info.inputFiles
 
 inFile = inputFiles[0]
