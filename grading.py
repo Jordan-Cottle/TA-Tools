@@ -3,35 +3,41 @@ import re
 import subprocess
 import info
 
-pattern = re.compile(r'(\w+)_(?:\w*?_)?\d+_\d+_([\w\d-]+.java)')
-canvasRenamePattern = re.compile(r'(\w+)-\d.java')
-
 inputFiles = info.inputFiles
 
 inFile = inputFiles[0]
 inStacked = inputFiles[1]
 
-
-directory = info.submissionDirectory
+directory = info.workingDirectory
 os.chdir(directory)
-files = os.listdir(directory)
+studentFolders = os.listdir(directory)
 
-for fileName in files:
-    print(fileName)
-    matches = re.match(pattern, fileName)
-    if(matches):
-        studentName = matches.group(1)
-        programName = matches.group(2)
-        programRenamed = re.match(canvasRenamePattern, programName)
-        if(programRenamed):
-            programName = programRenamed.group(1) + '.java'
+for dir in studentFolders:
+    print(dir)
+    os.chdir(dir)
 
-        if(not(os.path.exists(studentName))):
-            os.mkdir(studentName)
+    files = os.listdir('.')
 
-        os.rename(f'{directory}\{fileName}',
-                  f'{directory}/{studentName}/{programName}')
+    #remove .class files
+    for fileName in files:
+        if('.class' in fileName):
+            files.remove(fileName)
 
+    # compile files
+    for fileName in files:
+        print(fileName)
+        subprocess.run(f'javac {fileName}')
+    
+    # run files
+    for fileName in files:
+        execName = fileName.split('.')[0]
+        subprocess.run(f'java {execName}')
+    
+    os.chdir('..')
+
+
+
+'''
         os.chdir(f'{studentName}')
 
         subprocess.run('javac ' + programName)
@@ -59,3 +65,4 @@ for fileName in files:
             response = input("Would you like to run the program again: ")
 
         os.chdir(f'..')
+'''
