@@ -13,3 +13,6 @@ info.py
 
 # ignore excel files created using the scripts
 *.xlsx
+
+# ignore setup.py output and grading.py input folder
+/Grading Test
