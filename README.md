@@ -1,9 +1,9 @@
 # TA-Tools
 A collection of tools I've built to assist in grading and organizing my work as a grader/TA
 
-Most of the scripts in this project require the creation of an info.py file. When using a script, look for info being imported and make note of any components required inside of it. For these scripts to fucntion properly you will need to create an info.py file that satisfies the requirements of the script.
+Most of the scripts in this project require the creation of an info.py file. When using a script, look for info being imported and make note of any components required inside of it. For these scripts to fucntion properly you will need to create an info.py file that satisfies the requirements of the script. Look near the top of each script for a comment describing the required components and structure of info.py. In general info.py is just a series of variable declarations that can be refered to by the other python scripts
 
-* setup.py is a tool to rename and organize bulk submissions downlaoded from canvas
+* setup.py is a tool to rename and organize bulk submissions downloaded from canvas
 
 * grading.py is a tool to compile and execute java source code in bulk organized into folders
 
