@@ -2,13 +2,18 @@ import info
 from random import choice
 from openpyxl import Workbook
 
+# TODO: Check for same teams in past
+# TODO: Read names and past teams from spreadsheet
+
 ''' info.py requirements
     info.studentList
     - A dictionary containing all student's names
     - The structure of the dictionary is important
         * There are only two top level keys, "Male" and "Female"
-        * The values associated with each key is a list containing each student's name
-        * Each student's name is a list or tuple with two elements. Index 0 is thei first name, index 1 is their last name
+        * The values for each key is a list containing student names
+        * Each name is a list or tuple with two elements.
+            - Index 0 is their first name
+            - Index 1 is their last name
     - place all Male students in the list located under the "Male" key
     - place all Female students in the list located under the "Female" key
 
@@ -22,7 +27,7 @@ from openpyxl import Workbook
 
         "Female": [
             ("Jane", "Doe"),
-            ("Sarha", "Ward")
+            ("Sarah", "Ward")
         ]
     }
 '''
