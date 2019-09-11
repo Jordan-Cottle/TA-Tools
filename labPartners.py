@@ -7,9 +7,24 @@ from openpyxl import Workbook
     - A dictionary containing all student's names
     - The structure of the dictionary is important
         * There are only two top level keys, "Male" and "Female"
-        * The values associated with each key is simply a list containing each student's name
+        * The values associated with each key is a list containing each student's name
+        * Each student's name is a list or tuple with two elements. Index 0 is thei first name, index 1 is their last name
     - place all Male students in the list located under the "Male" key
     - place all Female students in the list located under the "Female" key
+
+    Example:
+
+    studentList = {
+        "Male": [
+            ("Joe", "Smith"),
+            ("John", "Doe")
+        ],
+
+        "Female": [
+            ("Jane", "Doe"),
+            ("Sarha", "Ward")
+        ]
+    }
 '''
 
 
@@ -51,11 +66,14 @@ if remaining == 1:  # odd number in class
 
     # Add extra male/female into existing male/female team (a single team of 3)
     if malesRemaining == 1:
+        print("Creating male team of 3")
         addToTeam(maleTeams, males[0])
     elif femalesRemaining == 1:
+        print('Creating female team of 3')
         addToTeam(femaleTeams, females[0])
 
 elif remaining == 2:  # odd number of both males and females
+    print('Creating mixed team')
     femaleTeams.append((males[0], females[0]))
 
 teams = maleTeams + femaleTeams
