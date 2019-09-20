@@ -15,7 +15,7 @@ import info
 '''
 
 pattern = re.compile(r'(\w+)_(?:\w*?_)?\d+_\d+_([\w\d-]+.java)')
-canvasRenamePattern = re.compile(r'(\w+)-\d.java')
+canvasRenamePattern = re.compile(r'(\w+)-\d+.java')
 
 workingDirectory = info.workingDirectory
 
