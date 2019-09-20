@@ -1,37 +1,39 @@
-import info
 from random import choice
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 # TODO: Check for same teams in past
 # TODO: Read names and past teams from spreadsheet
 
-''' info.py requirements
-    info.studentList
-    - A dictionary containing all student's names
-    - The structure of the dictionary is important
-        * There are only two top level keys, "Male" and "Female"
-        * The values for each key is a list containing student names
-        * Each name is a list or tuple with two elements.
-            - Index 0 is their first name
-            - Index 1 is their last name
-    - place all Male students in the list located under the "Male" key
-    - place all Female students in the list located under the "Female" key
+''' 
+This script requires a students.xlsx file to be created with all of the student's names and genders
 
-    Example:
+The first column should include each student's first name
+The second column should include each student's last name
+The last column should include each students gender, marked with M for male or F for female
 
-    studentList = {
-        "Male": [
-            ("Joe", "Smith"),
-            ("John", "Doe")
-        ],
-
-        "Female": [
-            ("Jane", "Doe"),
-            ("Sarah", "Ward")
-        ]
-    }
+The first row of the spreadsheet can include a header or be blank.
+The script begins reading from the second row.
 '''
+class Student:
+    def __init__(self, firstName, lastName, gender):
+        self.firstName = firstName
+        self.lastName = lastName
+        self.gender = gender
+    
+    def __str__(self):
+        return f'{self.firstName} {self.lastName}'
+    
 
+class Team:
+    def __init__(self, *students):
+        self.members = list(students)
+    
+    def addMember(self, student):
+        self.members.append(student)
+
+    def __str__(self):
+        return ' & '.join((str(member) for member in self.members))
+    
 
 def makeTeams(students):
     teams = []
@@ -41,23 +43,28 @@ def makeTeams(students):
         b = choice(students)
         students.remove(b)
 
-        teams.append((a, b))
+        teams.append(Team(a, b))
 
     return teams
 
 
-def addToTeam(teams, student):
-    oldTeam = choice(teams)
-    newTeam = (*oldTeam, student)
+studentWorkbook = load_workbook('students.xlsx', read_only=True)
+studentWorksheet = studentWorkbook.active
 
-    teams.remove(oldTeam)
-    teams.append(newTeam)
+males = []
+females = []
+# skip header on row 1
+for i in range(2, studentWorksheet.max_row + 1):
+    firstName = studentWorksheet[f'A{i}'].value
+    lastName = studentWorksheet[f'B{i}'].value
+    gender = studentWorksheet[f'C{i}'].value
 
+    student = Student(firstName, lastName, gender)
 
-students = info.studentList
-
-males = students['Male']
-females = students['Female']
+    if student.gender.lower() == 'm':
+        males.append(student)
+    else:
+        females.append(student)
 
 maleTeams = makeTeams(males)
 femaleTeams = makeTeams(females)
@@ -71,18 +78,18 @@ if remaining == 1:  # odd number in class
 
     # Add extra male/female into existing male/female team (a single team of 3)
     if malesRemaining == 1:
-        print("Creating male team of 3")
-        addToTeam(maleTeams, males[0])
+        print('Creating male team of 3')
+        choice(maleTeams).addMember(males[0])
     elif femalesRemaining == 1:
         print('Creating female team of 3')
-        addToTeam(femaleTeams, females[0])
+        print(females[0])
+        choice(femaleTeams).addMember(females[0])
 
 elif remaining == 2:  # odd number of both males and females
     print('Creating mixed team')
-    femaleTeams.append((males[0], females[0]))
+    femaleTeams.append(Team(males[0], females[0]))
 
 teams = maleTeams + femaleTeams
-
 
 workbook = Workbook()
 
@@ -91,20 +98,10 @@ sheet = workbook.active
 col = 'A'
 row = 1
 for team in teams:
-    # pull names out of tuple structure
-    firstNameA = team[0][0]
-    lastNameA = team[0][1]
-
-    firstNameB = team[1][0]
-    lastNameB = team[1][1]
-
-    # combine names together
-    teamNames = f'{firstNameA} {lastNameA} & {firstNameB} {lastNameB}'
 
     # set names into cell
-    sheet[f'{col}{row}'].value = teamNames
+    sheet[f'{col}{row}'].value = str(team)
 
     row += 1
-    print(teamNames)
 
 workbook.save('teams.xlsx')
