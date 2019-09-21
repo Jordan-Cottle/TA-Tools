@@ -57,4 +57,4 @@ for fileName in files:
             os.makedirs(destination)
 
         shutil.copy(f'{directory}/{fileName}',
-                    f'{destination}/{fileName}')
+                    f'{destination}/{programName}')
