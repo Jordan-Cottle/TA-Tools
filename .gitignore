@@ -11,8 +11,12 @@ info.py
 # ignore python bytecode files
 *.pyc
 
-# ignore excel files created using the scripts
+# ignore actual excel files created or used by the scripts
 *.xlsx
+# except for the example ones
+!studentsExample.xlsx
+!pastTeamsExample.xlsx
+!teamsExample.xlsx
 
 # ignore setup.py output and grading.py input folder
 /Grading Test
