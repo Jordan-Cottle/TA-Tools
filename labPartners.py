@@ -23,6 +23,12 @@ Check that the pastTeamsDir contains the path of the past teams excel workbook
 
 When the script is run, it will add the teams to the past teams workbook at the bottom of the first column.
 It will also create a new excel workbook named 'teams.xlsx' (or overwrite it if 'teams.xlsx' exists) with the new teams
+
+See the studentsExample.xlsx file for proper formatting of the students workbook
+See the pastTeamsExample.xlsx file for proper formatting of the past teams workbook
+See the teamsExample.xlsx file for the format of the expected output of the script
+
+You can change the studentsDir, pastTeamsDir, and outputDir variables to point to the example files to test the script
 '''
 
 studentsDir = 'students.xlsx'
