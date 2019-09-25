@@ -129,7 +129,7 @@ class StudentSubmission:
         return f'{self.fileName}'
 
 workingDirectory = input("Enter the path to the directory that contains the submissions folder: ")
-outputDirectory = f'{workingDirectory}/organizedSubmissions'
+outputDirectory = f'{workingDirectory}/submissionSetup'
 submissionDirectory = f'{workingDirectory}/submissions'
 
 if(not(os.path.exists(outputDirectory))):
@@ -209,7 +209,12 @@ for section in Student.sections:
 
 # Write or read text file for each section containing student's names
 for section in Student.sections:
-    fileName = f'{outputDirectory}/{section}.section'
+    sectionFolder = f'{outputDirectory}/{section}'
+    fileName = f'{sectionFolder}/{section}.section'
+
+    if(not os.path.exists(sectionFolder)):
+        os.mkdir(sectionFolder)
+
     with open(fileName, 'w') as sectionFile:
         for student in Student.sections[section]:
             print(student, file=sectionFile)
