@@ -23,6 +23,7 @@ This will shorten the setup process of organizing the students into their respec
 
 class Student:
     sections = {
+        # Add sections for class here
         '001': {},
         '002': {},
         '003': {},
@@ -64,10 +65,9 @@ class Student:
         self.submissions.append(submission)
 
     def setSection(self, section):
+        Student.sections[section][self.name] = self
         del Student.sections[self.section][self.name]
         self.section = section
-
-        Student.sections[self.section][self.name] = self
 
     def __eq__(self, value):
         if type(value) != type(self):
@@ -167,7 +167,7 @@ for section in Student.sections:
     if os.path.exists(fileName) and os.path.isfile(fileName):
         with open(fileName, 'r') as sectionFile:
             for name in sectionFile:
-                if len(name) < 3:
+                if len(name) < 2:
                     print(f'{name} too short!')
                     continue
                 student = Student(name.strip())
@@ -181,9 +181,18 @@ for section in Student.sections:
 
     if section is None:
         for name in list(Student.sections[None]):
-            s = input(f'Enter the section that {name} is in: ')
             student = Student(name)
-            student.setSection(s)
+            found = False
+            while not found:
+                s = input(f'Enter the section that {name} is in: ').strip()
+                try:
+                    student.setSection(s)
+                except KeyError:
+                    print(f'{s} is not a valid section number!')
+                    print('Your options are: ')
+                    print(*list(Student.sections.keys())[:-1], sep=', ')
+                else:
+                    found = True
         continue
 
     sectionList = Student.sections[section]
