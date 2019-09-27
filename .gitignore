@@ -18,5 +18,5 @@ info.py
 !pastTeamsExample.xlsx
 !teamsExample.xlsx
 
-# ignore setup.py output and grading.py input folder
-/Grading Test
+# ignore compiled class files
+*.class
