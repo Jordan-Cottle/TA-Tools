@@ -1,18 +1,49 @@
 import os
 import re
 import subprocess
-import info
 import shutil
 
 '''
 
 '''
 class JavaFile:
+    executablePattern = re.compile(r'public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*\w+\s*\)\s*{')
     def __init__(self, fileName):
         self.fileName = fileName
+        self.execName = fileName.split('.')[0]
+        
+        with open(self.fileName, 'r') as sourceFile:
+            contents = sourceFile.read()
+            match = re.search(JavaFile.executablePattern, contents)
+            if(match):
+                self.executable = True
+            else:
+                self.executable = False
+    def compile(self, dependencies=None):
+        if dependencies == None:
+            subprocess.run(f'javac {self.fileName}')
+        
+        elif dependencies != None:
+            subprocess.run(f'javac -cp {dependencies};. {self.fileName}')
+    
+    def run(self, dependencies=None, inputSource=None):
+        if (dependencies == None and inputSource == None):
+            subprocess.run(f'java {self.execName}')
+
+        elif dependencies == None and inputSource != None:
+            with open(inputSource, 'r') as stdin:
+                subprocess.run(f'java {self.execName}', stdin=stdin, text=True)
+
+        elif dependencies != None and inputSource == None:
+            subprocess.run(f'java -cp {dependencies};. {self.execName}')
+
+        elif dependencies != None and inputSource != None:
+            with open(inputSource, 'r') as stdin:
+                subprocess.run(f'java -cp {dependencies};. {self.execName}', stdin=stdin, text=True)
 
 
-preConfiguredFile = r'C:\Users\Jordan\Documents\School\TA Tools\grading.settings'
+
+preConfiguredFile = r'C:\Users\jorda\Documents\School\TA-Tools\grading.settings'
 injections = []
 inputFiles = []
 newConfig = False
@@ -67,10 +98,8 @@ if(newConfig):
         for inputFile in inputFiles:
             print(inputFile, file=configuration)
 
-print(topLevel)
-print(dependencies)
-print(injections)
-print(inputFiles)
+if dependencies == '':
+    dependencies = None
 
 os.chdir(topLevel)
 sections = os.listdir(topLevel)
@@ -82,47 +111,52 @@ for section in sections:
 
     studentFolders = os.listdir()
     for dir in studentFolders:
-        print(dir)
         if os.path.isdir(dir):
+            print(dir)
             os.chdir(dir)
         else:
             continue
-        
+
+        # Copy injections into current directory
+        for injection in injections:
+            fileName = injection.split('/')[-1]
+            shutil.copy(injection, f'{os.getcwd()}/{fileName}')
+
         files = os.listdir('.')
 
-        # remove .class files
+        javaFiles = []
         for fileName in files:
-            if('.class' in fileName):
-                files.remove(fileName)
+            extension = fileName.split('.')[-1]
+            if extension == 'class':
+                continue
+            elif extension == 'java':
+                javaFile = JavaFile(fileName)
+                javaFile.compile(dependencies)
+                javaFiles.append(javaFile)
 
-        # Inject and compile injections
-        for injection in injections:
-            fileName = injection.split('/')[-1]
-            print(fileName)
-            shutil.copy(injection, f'{os.getcwd()}/{fileName}')
-            subprocess.run(f'javac -cp {dependencies}:. {fileName}')
+        # Execute the programs
+        for javaFile in javaFiles:
+            if not javaFile.executable:
+                continue
 
-        # compile files
-        for fileName in files:
-            print(fileName)
-            subprocess.run(f'javac -cp {dependencies};. {fileName}')
-
-        # Run injections
-        for injection in injections:
-            fileName = injection.split('/')[-1]
-            execName = fileName.split('.')[0]
-            inputFile = inputFiles[0].split('/')[-1]
-            shutil.copy(inputFiles[0], f'{inputFile}')
-
-            stdin = open(inputFile, 'r')
-            subprocess.run(f'java -cp {dependencies};. {execName}', stdin=stdin, text=True)
-            stdin.close()
-
-        quit()
-        # run files
-        for fileName in files:
-            execName = fileName.split('.')[0]
-            subprocess.run(f'java -cp {dependencies};. {execName}')
+            print(javaFile.fileName)
+            repeat = 'y'
+            while 'y' in repeat:
+                if len(inputFiles) > 0:
+                    if len(inputFiles) == 1:
+                        inputFile = inputFiles[0]
+                    else:
+                        for i, inputFile in enumerate(inputFiles):
+                            print(i, inputFile, sep=': ')
+                        
+                        inputFileIndex = input("Enter the index of the input file you would like to use: ")
+                        inputFile = inputFiles[int(inputFileIndex)]
+                    
+                    javaFile.run(dependencies=dependencies, inputSource=inputFile)
+                else:
+                    javaFile.run(dependencies=dependencies)
+                
+                repeat = input("Would you like to run this program again? (y/n): ")
 
         os.chdir('..')
     os.chdir('..')
