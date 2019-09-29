@@ -27,9 +27,6 @@ class Student:
         '001': {},
         '002': {},
         '003': {},
-        '007': {},
-        '008': {},
-        '009': {},
 
         # Use to hold students until section is found
         None: {}
@@ -40,10 +37,8 @@ class Student:
     def __new__(cls, name, section=None):
         ''' Check to make sure student doesn't exist before creating a new Student '''
         if name in Student.students:
-            print(f'{name} found')
             return Student.students[name]
         else:
-            print(f'{name} not found, creating new student!')
             student = super(Student, cls).__new__(cls)
             return student
 
@@ -51,8 +46,6 @@ class Student:
         if name in Student.students:
             # Do not initialize
             return
-
-        print(f'Initializing {name}')
 
         self.name = name
         self.section = section
@@ -175,7 +168,6 @@ for section in Student.sections:
 
 # Organize students by section by hand
 for section in Student.sections:
-    print(len(Student.sections[None]))
     if len(Student.sections[None]) == 0:
         break
 
@@ -198,8 +190,7 @@ for section in Student.sections:
     sectionList = Student.sections[section]
 
     print(f"Currently listed in section {section}")
-    for name in sectionList:
-        print(name)
+    print(*sectionList, sep='\n')
 
     name = ''
     while not name.startswith('-'):
@@ -226,8 +217,7 @@ for section in Student.sections:
                 student.setSection(section)
 
     print(f"Currently listed in section {section}")
-    for name in sectionList:
-        print(name)
+    print(*sectionList, sep='\n')
 
 # Write or read text file for each section containing student's names
 for section in Student.sections:
@@ -241,6 +231,7 @@ for section in Student.sections:
         for student in Student.sections[section]:
             print(student, file=sectionFile)
 
+# Organize each submission into student folders by section
 for submission in submissions:
     section = submission.student.section
     name = submission.student.name
