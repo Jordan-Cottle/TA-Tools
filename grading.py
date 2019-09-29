@@ -24,73 +24,130 @@ class JavaFile:
             subprocess.run(f'javac {self.fileName}')
         
         elif dependencies != None:
-            subprocess.run(f'javac -cp {dependencies};. {self.fileName}')
+            subprocess.run(f'javac -cp "{";".join(dependencies)};." {self.fileName}')
     
     def run(self, dependencies=None, inputSource=None):
-        if (dependencies == None and inputSource == None):
+        
+        if (dependencies is None and inputSource is None):
             subprocess.run(f'java {self.execName}')
 
-        elif dependencies == None and inputSource != None:
+        elif dependencies is None and inputSource is not None:
             with open(inputSource, 'r') as stdin:
                 subprocess.run(f'java {self.execName}', stdin=stdin, text=True)
 
-        elif dependencies != None and inputSource == None:
-            subprocess.run(f'java -cp {dependencies};. {self.execName}')
+        elif dependencies is not None and inputSource is None:
+            subprocess.run(f'java -cp "{";".join(dependencies)};." {self.execName}')
 
-        elif dependencies != None and inputSource != None:
+        elif dependencies is not None and inputSource is not None:
             with open(inputSource, 'r') as stdin:
-                subprocess.run(f'java -cp {dependencies};. {self.execName}', stdin=stdin, text=True)
+                subprocess.run(f'java -cp "{";".join(dependencies)};." {self.execName}', stdin=stdin, text=True)
 
 
+def checkPath(path, isDir=False):
+    if not os.path.exists(path):
+        print(f'{path} does not exist!')
+        return False
+    
+    if isDir and not os.path.isdir(path):
+        print(f'{path} is not a directory!')
+        return False
+    elif not isDir and not os.path.isfile(path):
+        print(f'{path} is not a file!')
+        return False
+    
+    return True
+def getValidPaths(prompt, paths=None, getDir=False):
+    if paths is None:
+        paths = []
+    
+    path = input(prompt).strip()
+    if(path != ''):
+        if not checkPath(path, getDir):
+            print('Please try again!')
+            return getValidPaths(prompt, paths, getDir)
+    
+    while path != '':
+        paths.append(path)
+        path = input(prompt)
+        if(path != ''):
+            if not checkPath(path, getDir):
+                print('Please try again!')
+                return getValidPaths(prompt, paths, getDir)
 
-preConfiguredFile = r'C:\Users\jorda\Documents\School\TA-Tools\grading.settings'
+    return paths
+
+
+dependencies = []
 injections = []
 inputFiles = []
 newConfig = False
-if preConfiguredFile != '':
+if 'y' in input("Do you have a valid configuration file? (y/n): "):
+    preConfiguredFile = input ("Enter the path and name of the configuration file: ")
     with open(preConfiguredFile, 'r') as configuration:
-        topLevel = configuration.readline()
-        dependencies = configuration.readline()
-        settingInjections = True
+        reading = 'top'
         for line in configuration:
-            if line.strip() == 'Input:':
-                settingInjections = False
+            line = line.strip()
+
+            # Change state when prompt line is found
+            if line.startswith('Input:'):
+                reading = 'input'
                 continue
-            if settingInjections:
+            elif line.startswith('Depend:'):
+                reading = 'dependencies'
+                continue
+            elif line.startswith('Inject:'):
+                reading = 'injections'
+                continue
+            elif line.startswith('#'):
+                # Skip comments
+                continue
+        
+            # Assign line to proper list based on current reading state
+            if reading == 'injections':
                 injections.append(line)
-            else:
+            elif reading == 'input':
                 inputFiles.append(line)
+            elif reading == 'dependencies':
+                dependencies.append(line)
+            elif reading == 'top':
+                topLevel = line
+            else:
+                print(f'Invalid state for configuration reading: {reading}')
 else:
-    topLevel = input('Enter the path of the directory that contains all of the section folders: ')
-    dependencies = input('Enter the path to any additional class files each submission need to function: ')
+    topLevel = input('Enter the path of the directory that contains all of the section folders you want to grade: ')
+    while not os.path.exists(topLevel) or not os.path.isdir(topLevel):
+        print(f'{topLevel} is not a valid path to a directory!')
+        topLevel = input('Enter the path of the directory that contains all of the section folders you want to grade: ')
 
-    if 'y' in input('Do you have any files to inject into each submission? (y/n)'):
-        inject = input('Enter the full path and name of an extra file you want to include with each submission: ')
-        while inject != '':
-            injections.append(inject)
-            inject = input('Enter the full path and name of an extra file you want to include with each submission: ')
+    if 'y' in input('Do the submissions require any external files (dependencies) to function properly? (y/n): '):
+        dependencies = getValidPaths('Enter the path to a directory that contains the external class files each submission needs to function: ', getDir=True)
 
-    if 'y' in input('Do you have any prewritten input files? (y/n)'):
-        inputFilePath = input("Enter the full path of an input file: ")
-        while inputFilePath != '':
-            inputFiles.append(inputFilePath)
-            inputFilePath = input("Enter the full path of an input file: ")
+    if 'y' in input('Do you have any files to inject into each submission? (y/n): '):
+        injections = getValidPaths('Enter the path to an extra file you want to include with each submission: ')
+
+    if 'y' in input('Do you have any prewritten input files? (y/n): '):
+        inputFilePath = getValidPaths("Enter the path to an input file: ")
 
     newConfig = True
 
 # Clean up data
+def cleanPath(path):
+    return path.strip().replace('\\', '/')
+
 topLevel = topLevel.strip().replace("\\", '/')
-dependencies = dependencies.strip().replace("\\", '/')
-for i in range(len(injections)):
-    injections[i] = injections[i].strip().replace("\\", '/')
-for i in range(len(inputFiles)):
-    inputFiles[i] = inputFiles[i].strip().replace("\\", '/')
+dependencies = [cleanPath(dependency) for dependency in dependencies]
+injections = [cleanPath(injection) for injection in injections]
+inputFiles = [cleanPath(inputFile) for inputFile in inputFiles]
 
 if(newConfig):
     with open('grading.settings', 'w') as configuration:
         print(topLevel, file=configuration)
-        print(dependencies, file=configuration)
-
+        
+        print("Depend:", file=configuration)
+        for dependency in dependencies:
+            print(dependency, file=configuration)
+        
+        print("Inject:", file=configuration)
         for injection in injections:
             print(injection, file=configuration)
 
@@ -98,7 +155,7 @@ if(newConfig):
         for inputFile in inputFiles:
             print(inputFile, file=configuration)
 
-if dependencies == '':
+if not dependencies:
     dependencies = None
 
 os.chdir(topLevel)
@@ -110,10 +167,9 @@ for section in sections:
     os.chdir(section)
 
     studentFolders = os.listdir()
-    for dir in studentFolders:
-        if os.path.isdir(dir):
-            print(dir)
-            os.chdir(dir)
+    for studentName in studentFolders:
+        if os.path.isdir(studentName):
+            os.chdir(studentName)
         else:
             continue
 
@@ -139,18 +195,19 @@ for section in sections:
             if not javaFile.executable:
                 continue
 
-            print(javaFile.fileName)
+            print('+'*8, studentName, '+'*8, sep='|')
             repeat = 'y'
             while 'y' in repeat:
+                print('~'*3, javaFile.fileName, '~'*3, sep='')
                 if len(inputFiles) > 0:
                     if len(inputFiles) == 1:
                         inputFile = inputFiles[0]
                     else:
                         for i, inputFile in enumerate(inputFiles):
-                            print(i, inputFile, sep=': ')
+                            print(i+1, inputFile, sep=': ')
                         
                         inputFileIndex = input("Enter the index of the input file you would like to use: ")
-                        inputFile = inputFiles[int(inputFileIndex)]
+                        inputFile = inputFiles[int(inputFileIndex)-1]
                     
                     javaFile.run(dependencies=dependencies, inputSource=inputFile)
                 else:
