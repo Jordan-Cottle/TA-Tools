@@ -4,7 +4,42 @@ import subprocess
 import shutil
 
 '''
+This script will look in a given directory for a set of section folders that each contain a set of student folders.
+The script will compile and execute all of the java source code files it finds inside of each of the student folders.
 
+When the script starts you will be asked if you have a configuration file. 
+If it is the first time you have run the script, you do not have a valid configuration file, answer no.
+If you have successfully run the script before, you should have a configuration file with the settings you chose the first time.
+It should be called grading.settings and found in the same directory as the script file.
+
+There are a number of different settings for the script. Each setting is in the form of a path to either a dirrectory or file on your system.
+Other than the top level setting, you can input an empty line to indicate that you are either done giving values, or would like to skip the setting.
+When prompted for a setting you wish to skip, simply press enter to continue. 
+
+The first, and only required setting is the top level directory.
+The path for the top level directory should point to the directory that holds all of the section folders you wish to grade
+
+The dependencies setting allows you to specify a folder to include in the class path when compiling and running the java programs.
+The path should point to a directory that contains any extra java files the submissions will need.
+You can use this setting to include things like an external library used by the students for an assignment.
+**Note: This has not been tested with more sophisticated packaging like a .jar file. 
+This is only guarenteed to work with a directory full of java source code files.**
+
+The injections setting allows you to specify specific files to copy into each of the student's submissions.
+These injected files can static classes the students were given to work with as aprt of the assignment and their submissions will have access to them.
+They can also be driver or test files that use files the students have submitted.
+They will behave exactly as if they were included in the student's submitted project.
+You can spefic as many of these injection files as you would like. Just remember they get copied and compiled for each student.
+
+The input files setting allows you to specify specific files to use as an input source for the programs.
+You can specify any number of files you want to use. If you specify more than one, you will be prompted before each run of a program which you would like to use.
+These files will replace and keyboard input normally taken by the program.
+Any time a program would use a Scanner to read from System.in, it will read from one of these input files instead.
+If no input files are specified, the default System.in will be used.
+
+When the program are run, the student's name will be output at the top, followed by the program name.
+When a program completes, the script will ask you if you want to run the program again.
+If you have given the script mmore than one input file to use, you will be prompted to pick one to use before each run of a program.
 '''
 class JavaFile:
     executablePattern = re.compile(r'public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*\w+\s*\)\s*{')
