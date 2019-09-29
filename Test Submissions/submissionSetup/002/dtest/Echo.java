@@ -4,7 +4,7 @@ public class Echo{
         System.out.println("Hello World");
         Scanner in = new Scanner(System.in);
 
-        while (in.hasNext()){
+        for(int i = 0; i < 5; i++){
             System.out.println(in.nextLine());
         }
         

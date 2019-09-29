@@ -1,5 +1,12 @@
-C:/Users/Jordan/Documents/School/Fall 2019/ITSC 1313 TA/THPT 1/submissionSetup
-
-C:/Users/Jordan/Documents/School/TA Tools/Echo.java
+# Place Top Level folder path at top of file
+C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/submissionSetup
+# Place dependency directory paths on lines under a header "Depend:"
+Depend:
+C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/ExampleDependencies
+# Place injection file paths on lines under the header "Inject:"
+Inject:
+C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/ExampleInjections/Echo.java
+# Place input file paths on lines under the header "Input:"
 Input:
-C:/Users/Jordan/Documents/School/TA Tools/test.txt
+C:\Users\jorda\Documents\School\TA-Tools\Test Submissions\ExampleInput\test.txt
+C:\Users\jorda\Documents\School\TA-Tools\Test Submissions\ExampleInput\numbers.txt
