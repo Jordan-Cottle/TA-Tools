@@ -23,7 +23,7 @@ The dependencies setting allows you to specify a folder to include in the class 
 The path should point to a directory that contains any extra java files the submissions will need.
 You can use this setting to include things like an external library used by the students for an assignment.
 **Note: This has not been tested with more sophisticated packaging like a .jar file. 
-This is only guarenteed to work with a directory full of java source code files.**
+This is only guarenteed to work with a directory containing java source code files.**
 
 The injections setting allows you to specify specific files to copy into each of the student's submissions.
 These injected files can static classes the students were given to work with as aprt of the assignment and their submissions will have access to them.
