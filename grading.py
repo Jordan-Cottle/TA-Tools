@@ -44,7 +44,7 @@ If you have given the script more than one input file to use, you will be prompt
 
 
 class JavaFile:
-    executablePattern = re.compile(r'public\s+static\s+void\s+main\s*\(\s*String\s*\[\s*\]\s*\w+\s*\)\s*{')
+    executablePattern = re.compile(r'public\s+static\s+void\s+main')
 
     def __init__(self, fileName):
         self.fileName = fileName
@@ -202,7 +202,8 @@ if not dependencies:
 os.chdir(topLevel)
 sections = os.listdir(topLevel)
 for section in sections:
-    if(section == 'None'):
+    # Skip the None folder and any files in the directory
+    if(section == 'None' or not os.path.isdir(section)):
         continue
     print(f'Section {section}')
     os.chdir(section)
