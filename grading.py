@@ -10,7 +10,7 @@ The script will compile and execute all of the java source code files it finds i
 When the script starts you will be asked if you have a configuration file.
 If it is the first time you have run the script, you do not have a valid configuration file, answer no.
 If you have successfully run the script before, you should have a configuration file with the settings you chose the first time.
-It should be called grading.settings and found in the same directory as the script file.
+It should be called grading.settings and found in the top level directory you entered for the previous run.
 
 There are a number of different settings for the script. Each setting is in the form of a path to either a dirrectory or file on your system.
 Other than the top level setting, you can input an empty line to indicate that you are either done giving values, or would like to skip the setting.
@@ -181,7 +181,7 @@ injections = [cleanPath(injection) for injection in injections]
 inputFiles = [cleanPath(inputFile) for inputFile in inputFiles]
 
 if(newConfig):
-    with open('grading.settings', 'w') as configuration:
+    with open(f'{topLevel}/grading.settings', 'w') as configuration:
         print(topLevel, file=configuration)
 
         print("Depend:", file=configuration)
