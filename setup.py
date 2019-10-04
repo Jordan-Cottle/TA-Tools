@@ -27,6 +27,9 @@ class Student:
         '001': {},
         '002': {},
         '003': {},
+        '007': {},
+        '008': {},
+        '009': {},
 
         # Use to hold students until section is found
         None: {}
@@ -219,13 +222,9 @@ for section in Student.sections:
     print(f"Currently listed in section {section}")
     print(*sectionList, sep='\n')
 
-# Write or read text file for each section containing student's names
+# Write text file for each section containing student's names
 for section in Student.sections:
-    sectionFolder = f'{outputDirectory}/{section}'
-    fileName = f'{sectionFolder}/{section}.section'
-
-    if(not os.path.exists(sectionFolder)):
-        os.mkdir(sectionFolder)
+    fileName = f'{outputDirectory}/{section}.section'
 
     with open(fileName, 'w') as sectionFile:
         for student in Student.sections[section]:
