@@ -8,5 +8,5 @@ Inject:
 C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/ExampleInjections/Echo.java
 # Place input file paths on lines under the header "Input:"
 Input:
-C:\Users\jorda\Documents\School\TA-Tools\Test Submissions\ExampleInput\test.txt
-C:\Users\jorda\Documents\School\TA-Tools\Test Submissions\ExampleInput\numbers.txt
+C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/ExampleInput/test.txt
+C:/Users/jorda/Documents/School/TA-Tools/Test Submissions/ExampleInput/numbers.txt
