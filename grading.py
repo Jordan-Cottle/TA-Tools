@@ -245,6 +245,7 @@ for section in sections:
                     continue
 
                 print('~'*3, javaFile.fileName, '~'*3, sep='')
+                javaFile.compile(dependencies)
                 if len(inputFiles) > 0:
                     if len(inputFiles) == 1:
                         inputFile = inputFiles[0]

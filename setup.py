@@ -24,12 +24,9 @@ This will shorten the setup process of organizing the students into their respec
 class Student:
     sections = {
         # Add sections for class here
-        '001': {},
-        '002': {},
-        '003': {},
-        '007': {},
-        '008': {},
-        '009': {},
+        '103': {},
+        '104-A': {},
+        '104-B': {},
 
         # Use to hold students until section is found
         None: {}
