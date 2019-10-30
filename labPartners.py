@@ -99,6 +99,7 @@ def makeTeams(students, pastTeams):
 
     return teams
 
+
 # Get students from spreadsheet
 studentWorkbook = load_workbook(studentsDir, read_only=True)
 studentWorksheet = studentWorkbook.active
