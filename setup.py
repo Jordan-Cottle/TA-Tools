@@ -86,8 +86,8 @@ class StudentSubmission:
     Contains a number of methods to help with renaming, compiling, and executing
     '''
 
-    canvasPattern = re.compile(r'(\w+)_(?:\w*?_)?\d+_\d+_([\w\d-]+.java)')
-    duplicateNamePattern = re.compile(r'(\w+)-\d+.java')
+    canvasPattern = re.compile(r'(\w+?)_(?:\w*?_)?\d+_\d+_([\w\d _-]+).(\w+)')
+    duplicateNamePattern = re.compile(r'(\w+)-\d+.(\w+)')
 
     def __new__(cls, fileName, parentDirectory=None):
         matches = re.match(StudentSubmission.canvasPattern, fileName)
@@ -101,10 +101,10 @@ class StudentSubmission:
         matches = re.match(StudentSubmission.canvasPattern, fileName)
         if(matches):
             self.student = Student(matches.group(1))
-            self.programName = matches.group(2)
+            self.programName = f'{matches.group(2)}.{matches.group(3)}'
             duplicateName = re.match(StudentSubmission.duplicateNamePattern, self.programName)
             if(duplicateName):
-                self.programName = duplicateName.group(1) + '.java'
+                self.programName = f'{duplicateName.group(1)}.{duplicateName.group(2)}'
 
             self.execName = self.programName.split('.')[0]
         else:
@@ -137,12 +137,13 @@ class StudentSubmission:
     def __str__(self):
         return f'{self.fileName}'
 
+
 workingDirectory = input("Enter the path to the directory that contains the submissions folder: ")
 outputDirectory = f'{workingDirectory}/submissionSetup'
 submissionDirectory = f'{workingDirectory}/submissions'
 
 if(not(os.path.exists(outputDirectory))):
-            os.mkdir(outputDirectory)
+    os.mkdir(outputDirectory)
 
 os.chdir(workingDirectory)
 
@@ -237,7 +238,7 @@ for submission in submissions:
     destination = f'{outputDirectory}/{section}/{name}'
 
     if(not(os.path.exists(destination))):
-            os.makedirs(destination)
+        os.makedirs(destination)
 
     submission.move(destination)
     submission.rename(submission.programName)
