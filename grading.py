@@ -234,12 +234,16 @@ for section in sections:
 
         # Execute the programs
         for javaFile in javaFiles:
-            if not javaFile.executable:
-                continue
-
             print('+'*8, studentName, '+'*8, sep='|')
             repeat = 'y'
             while 'y' in repeat:
+                # recompile (to allow for changes to files during grading)
+                javaFile.compile(dependencies)
+
+                if not javaFile.executable:
+                    repeat = 'n'
+                    continue
+
                 print('~'*3, javaFile.fileName, '~'*3, sep='')
                 if len(inputFiles) > 0:
                     if len(inputFiles) == 1:
